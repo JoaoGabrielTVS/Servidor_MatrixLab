@@ -13,7 +13,7 @@ OPENROUTER_API_KEY = os.getenv(
 # Definição do caminho para banco de questões
 QUESTION_BANK_PATH = os.getenv(
     "QUESTION_BANK_PATH",
-    "rag/Questoes_geradas"
+    "rag/question_bank"
 )
 # Definição do caminho para banco de teoria
 THEORY_BANK_PATH = os.getenv(
