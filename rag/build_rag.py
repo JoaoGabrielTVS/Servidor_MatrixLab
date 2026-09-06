@@ -5,7 +5,7 @@ from langchain_core.documents import Document
 
 import os
 
-from core.llm import embeddings
+from core.llm import get_embeddings
 from config.settings import QUESTION_BANK_PATH, THEORY_BANK_PATH
 
 # Adicionamos o vectorstore globalmente aqui para podermos manipular depois
@@ -15,6 +15,7 @@ theory_retriever = None
 
 def build_question_rag():
     global question_retriever, question_vectorstore
+    embeddings = get_embeddings()
 
     print("Construindo RAG de questões...")
     docs = []
@@ -88,6 +89,7 @@ def add_new_question_to_rag(file_name: str, content: str):
 
 def build_theory_rag():
     global theory_retriever
+    embeddings = get_embeddings()
 
     print("Construindo RAG de teoria...")
     docs = []

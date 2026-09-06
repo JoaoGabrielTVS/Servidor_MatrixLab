@@ -11,6 +11,15 @@ llm = ChatOpenAI(
   
 )
 
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
+embeddings = None
+
+
+def get_embeddings():
+    global embeddings
+
+    if embeddings is None:
+        embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2"
+        )
+
+    return embeddings
