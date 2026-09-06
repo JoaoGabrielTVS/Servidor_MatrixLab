@@ -1,4 +1,4 @@
-from langgraph.checkpoint.memory import MemorySaver
+from core.memory import shared_memory
 from langchain.agents import create_agent
 
 from core.llm import llm
@@ -7,8 +7,6 @@ from rag.tools import (
     search_exercises,
     search_theory
 )
-
-memory = MemorySaver()
 
 agent = create_agent(
     model=llm,
@@ -28,7 +26,12 @@ agent = create_agent(
         - Nunca diga que o usuário enviou arquivos ou PDFs.
         - Se as ferramentas não retornarem conteúdo suficiente, responda:
         <p>Não encontrei informações suficientes na base de conhecimento.</p>
-
+                        
+        REGRAS PARA EXPLICAÇÃO DE CONTEUDO:
+                - Quando o usuario pedir para explicar um conteudo ou uma questão que tenha haver com algebra linear e vetorial, voce pode usar seu proprio conhecimento para responder mesmo que nao esteja no RAG.
+                - Se o que o usuario pediu para explicar nao tem ahver com algebra linear e vetorial retorne:
+                <p>Esse assunto não é sobre algebra.</p>
+        
         REGRAS PARA QUESTÕES:
         - Quando o usuário pedir uma questão, exercício, problema ou usar verbos como "invente", "crie", "elabore", "gere", utilize APENAS a ferramenta search_exercises.
         - NUNCA invente, crie ou elabore questões com conhecimento próprio.
@@ -71,5 +74,5 @@ agent = create_agent(
         """
     ),
 
-    checkpointer=memory
+    checkpointer=shared_memory
 )

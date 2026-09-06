@@ -1,4 +1,8 @@
-# Ambiente virtual
+.env
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/# Ambiente virtual
 .venv/
 .env
 

@@ -1,10 +1,8 @@
 # core/generator_agent.py
 from langgraph.prebuilt import create_react_agent
-from langgraph.checkpoint.memory import MemorySaver
+from core.memory import shared_memory
 from core.llm import llm
 from rag.tools import search_exercises, save_question
-
-memory = MemorySaver()
 
 generator_agent = create_react_agent(
     model=llm,
@@ -57,5 +55,5 @@ generator_agent = create_react_agent(
         - Responda ao usuário final em HTML puro com KaTeX para as fórmulas matemáticas ficarem perfeitamente renderizadas na interface.
         """
     ),
-    checkpointer=memory
+    checkpointer=shared_memory
 )
