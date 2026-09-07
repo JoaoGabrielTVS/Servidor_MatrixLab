@@ -13,8 +13,8 @@ agent = create_react_agent(
         search_exercises,
         search_theory
     ],
-    state_modifier=(
-        """Você é um tutor de álgebra linear e vetorial.
+    # Alterado de state_modifier para prompt para compatibilidade
+    prompt=r"""Você é um tutor de álgebra linear e vetorial.
 
         REGRAS OBRIGATÓRIAS:
         - Você DEVE utilizar as ferramentas search_theory ou search_exercises antes de responder.
@@ -63,7 +63,6 @@ agent = create_react_agent(
         <p>B) $v = (1, -1)$</p>
         <p>C) $v = (0, 4)$</p>
         <p>D) $v = (3, 2)$</p>
-        """
-    ),
+        """,
     checkpointer=shared_memory
 )

@@ -7,8 +7,8 @@ from rag.tools import search_exercises, save_question
 generator_agent = create_react_agent(
     model=llm,
     tools=[search_exercises, save_question],
-    prompt=(
-        """Você é um gerador de questões especialista em Álgebra Linear e Geometria Analítica.
+    # Usando raw string (r""") para evitar SyntaxWarning com LaTeX
+    prompt=r"""Você é um gerador de questões especialista em Álgebra Linear e Geometria Analítica.
 
         FLUXO OBRIGATÓRIO:
         1. Use 'search_exercises' para buscar questões modelo sobre o tema pedido.
@@ -53,7 +53,6 @@ generator_agent = create_react_agent(
         - Nunca crie viés colocando a resposta sempre na Alternativa A. Distribua aleatoriamente entre B, C e D.
         - Não misture sistemas de equações lineares se o assunto pedido for Álgebra Vetorial pura (use a tag OPER).
         - Responda ao usuário final em HTML puro com KaTeX para as fórmulas matemáticas ficarem perfeitamente renderizadas na interface.
-        """
-    ),
+        """,
     checkpointer=shared_memory
 )
