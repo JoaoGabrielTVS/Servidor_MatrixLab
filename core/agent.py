@@ -1,6 +1,5 @@
+from langgraph.prebuilt import create_react_agent
 from core.memory import shared_memory
-from langchain.agents import create_agent
-
 from core.llm import llm
 
 from rag.tools import (
@@ -8,15 +7,13 @@ from rag.tools import (
     search_theory
 )
 
-agent = create_agent(
+agent = create_react_agent(
     model=llm,
-
     tools=[
         search_exercises,
         search_theory
     ],
-
-    system_prompt=(
+    state_modifier=(
         """Você é um tutor de álgebra linear e vetorial.
 
         REGRAS OBRIGATÓRIAS:
@@ -26,12 +23,7 @@ agent = create_agent(
         - Nunca diga que o usuário enviou arquivos ou PDFs.
         - Se as ferramentas não retornarem conteúdo suficiente, responda:
         <p>Não encontrei informações suficientes na base de conhecimento.</p>
-                        
-        REGRAS PARA EXPLICAÇÃO DE CONTEUDO:
-                - Quando o usuario pedir para explicar um conteudo ou uma questão que tenha haver com algebra linear e vetorial, voce pode usar seu proprio conhecimento para responder mesmo que nao esteja no RAG.
-                - Se o que o usuario pediu para explicar nao tem ahver com algebra linear e vetorial retorne:
-                <p>Esse assunto não é sobre algebra.</p>
-        
+
         REGRAS PARA QUESTÕES:
         - Quando o usuário pedir uma questão, exercício, problema ou usar verbos como "invente", "crie", "elabore", "gere", utilize APENAS a ferramenta search_exercises.
         - NUNCA invente, crie ou elabore questões com conhecimento próprio.
@@ -55,10 +47,10 @@ agent = create_agent(
         - Bloco (centralizado): $$formula$$
 
         Exemplos corretos:
-        - Autovalor: $\\lambda = 3$
-        - Matriz: $$A = \\begin{{pmatrix}} 2 & -1 \\\\ 1 & 4 \\end{{pmatrix}}$$
-        - Determinante: $$\\det(A - \\lambda I) = 0$$
-        - Vetor: $$v = \\begin{{pmatrix}} 1 \\\\ -2 \\\\ 3 \\end{{pmatrix}}$$
+        - Autovalor: $\lambda = 3$
+        - Matriz: $$A = \begin{pmatrix} 2 & -1 \\ 1 & 4 \end{pmatrix}$$
+        - Determinante: $$\det(A - \lambda I) = 0$$
+        - Vetor: $$v = \begin{pmatrix} 1 \\ -2 \\ 3 \end{pmatrix}$$
 
         Para estrutura HTML use estas classes CSS:
         - Seção: <div class="secao"><p class="titulo">Título</p> conteúdo </div>
@@ -73,6 +65,5 @@ agent = create_agent(
         <p>D) $v = (3, 2)$</p>
         """
     ),
-
     checkpointer=shared_memory
 )
