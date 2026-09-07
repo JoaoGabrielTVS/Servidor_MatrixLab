@@ -27,7 +27,8 @@ def search_exercises(query: str) -> str:
     if build_rag.question_retriever is None:
         return "RAG de questões não inicializado."
 
-    docs = build_rag.question_retriever.invoke(query)
+    # 🟢 Limitamos a busca para apenas 2 documentos para economizar tokens e ser mais rápido
+    docs = build_rag.question_retriever.invoke(query)[:2]
 
     if not docs:
         return "Nenhuma questão encontrada."
@@ -55,7 +56,8 @@ def search_theory(query: str) -> str:
     if build_rag.theory_retriever is None:
         return "RAG de teoria não inicializado."
 
-    docs = build_rag.theory_retriever.invoke(query)
+    # 🟢 Limitamos a busca para apenas 2 documentos para economizar tokens e ser mais rápido
+    docs = build_rag.theory_retriever.invoke(query)[:2]
 
     if not docs:
         return "Nenhuma teoria encontrada."

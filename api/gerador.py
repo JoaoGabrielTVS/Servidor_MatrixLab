@@ -21,9 +21,15 @@ async def generate_question(request: ChatRequest):
         )
     except Exception as exc:
         logger.exception("Falha ao gerar questão para a sessão %s", session_id)
+        error_msg = str(exc)
+        if "402" in error_msg or "credits" in error_msg.lower():
+            raise HTTPException(
+                status_code=402,
+                detail="Saldo insuficiente no provedor de IA (OpenRouter). Por favor, recarregue seus créditos."
+            )
         raise HTTPException(
             status_code=502,
-            detail=f"Falha ao gerar questão: {type(exc).__name__}: {exc}"
+            detail=f"O servidor demorou muito para responder ou encontrou um erro interno. Tente uma pergunta mais simples."
         ) from exc
 
     return {
