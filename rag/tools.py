@@ -69,7 +69,18 @@ def search_theory(query: str) -> str:
 
     return context
 
-# tools.py — adicionar
+@tool
+def count_exercises(assunto: str) -> int:
+    """
+    Conta quantas questões existem no banco de dados sobre um assunto específico.
+    Use isso para verificar se o estoque de questões está baixo.
+    """
+    if build_rag.question_retriever is None:
+        return 0
+
+    docs = build_rag.question_retriever.invoke(assunto)
+    return len(docs)
+
 @tool
 def save_question(content: str, assunto: str) -> str:
     """
