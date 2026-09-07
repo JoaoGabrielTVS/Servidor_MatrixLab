@@ -1,8 +1,7 @@
 import logging
 import uuid
-
 from fastapi import APIRouter, HTTPException
-from core.agente_gerador import generator_agent
+from core.agent import agent # 🟢 Mudamos para o agente Tutor (mais leve)
 from api.chat import ChatRequest
 
 router = APIRouter()
@@ -10,29 +9,30 @@ logger = logging.getLogger(__name__)
 
 @router.post("/generate")
 async def generate_question(request: ChatRequest):
-    # Usa o session_id do request ou cria um novo se não existir
     session_id = request.session_id or str(uuid.uuid4())
 
-    # O invoke agora usa o session_id como thread_id, permitindo memória compartilhada
+    # Instrução específica para o Tutor apenas BUSCAR uma questão
+    prompt_busca = f"Por favor, procure no banco de exercícios uma questão sobre: {request.message}. Apresente o enunciado e as alternativas exatamente como estão no banco."
+
     try:
-        result = generator_agent.invoke(
-            {"messages": [("user", request.message)]},
+        # Usamos o agente tutor que já está configurado para não inventar questões
+        result = agent.invoke(
+            {"messages": [("user", prompt_busca)]},
             config={"configurable": {"thread_id": session_id}}
         )
+
+        return {
+            "session_id": session_id,
+            "response": result["messages"][-1].content
+        }
+
     except Exception as exc:
-        logger.exception("Falha ao gerar questão para a sessão %s", session_id)
+        logger.exception("Erro no processo de busca de questão")
         error_msg = str(exc)
-        if "402" in error_msg or "credits" in error_msg.lower():
-            raise HTTPException(
-                status_code=402,
-                detail="Saldo insuficiente no provedor de IA (OpenRouter). Por favor, recarregue seus créditos."
-            )
+        if "402" in error_msg:
+            raise HTTPException(status_code=402, detail="Saldo insuficiente no OpenRouter.")
+
         raise HTTPException(
             status_code=502,
-            detail=f"O servidor demorou muito para responder ou encontrou um erro interno. Tente uma pergunta mais simples."
-        ) from exc
-
-    return {
-        "session_id": session_id,
-        "response": result["messages"][-1].content
-    }
+            detail="O servidor demorou a responder. Tente novamente em instantes."
+        )
